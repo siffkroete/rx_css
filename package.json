@@ -12,12 +12,16 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "hammerjs": "^2.0.8",
     "path": "^0.12.7",
     "rxcss": "^0.10.0",
-    "rxjs": "^6.6.0"
+    "rxjs": "^6.6.0",
+    "source-map-loader": "^1.0.1"
   },
   "devDependencies": {
+    "@babel/core": "^7.10.4",
+    "@babel/preset-env": "^7.10.4",
+    "@babel/preset-react": "^7.10.4",
+    "babel-loader": "^8.1.0",
     "css-loader": "^3.6.0",
     "mini-css-extract-plugin": "^0.9.0",
     "style-loader": "^1.2.1",
