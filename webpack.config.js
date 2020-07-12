@@ -4,7 +4,7 @@ const path = require('path');
 
 
 module.exports = {
-    entry: './src/index.js',
+    entry: ['webpack/hot/dev-server' , './src/index.js'],
     output: {
         path: path.resolve(__dirname, 'build'),
         publicPath: '/build',
@@ -33,6 +33,11 @@ module.exports = {
           test: /\.js$/,
           enforce: 'pre',
           use: ['source-map-loader'],
+        },
+        {
+          test: /\.tsx?$/,
+          use: 'ts-loader',
+          exclude: /node_modules/,
         },
       ],
     }
