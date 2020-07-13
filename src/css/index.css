@@ -5,11 +5,10 @@
 
 
 body {
-    padding: 2%;
+    padding: 0%;
 }
 
 #cube {
-    position: relative;
     width: 10vmin;
     height: 10vmin;
     border: 2px solid greenyellow;
@@ -17,4 +16,9 @@ body {
     transform:
         translateX(calc(var(--mouse-x) * 1px))
         translateY(calc(var(--mouse-y) * 1px));
+}
+
+.draggable {
+    position: absolute; 
+    cursor: pointer; 
 }

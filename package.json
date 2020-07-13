@@ -16,6 +16,7 @@
     "path": "^0.12.7",
     "rxcss": "^0.10.0",
     "rxjs": "^6.6.0",
+    "rxjs-compat": "^6.6.0",
     "source-map-loader": "^1.0.1"
   },
   "devDependencies": {
