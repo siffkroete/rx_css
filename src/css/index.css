@@ -1,24 +1,60 @@
 :root {
-    --mouse-x: 0;  
-    --mouse-y: 0;
+    --paddle-left-x: 15;  
+    --paddle-left-y: 0; 
+    --ball-x: 200;
+    --ball-y: 200;
 } 
 
 
 body {
-    padding: 0%;
+    
 }
 
-#cube {
-    width: 10vmin;
+canvas {
+    border: 1px solid black;
+}
+
+#spielfeld {
+    position: absolute;
+    width: 80vmin;
+    height: 60vmin;
+    border: 2px solid black;
+    box-sizing: border-box;
+}
+
+#paddle_left {
+    position: absolute; 
+    width: 2vmin;
     height: 10vmin;
+    border: 2px solid greenyellow;
+    background-color: aqua;
+    transform:
+        translateX(calc(var(--paddle-left-x) * 1px))
+        translateY(calc(var(--paddle-left-y) * 1px));
+}
+
+#ball {
+    position: absolute; 
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
     border: 2px solid greenyellow;
     background-color: hotpink;
     transform:
-        translateX(calc(var(--mouse-x) * 1px))
-        translateY(calc(var(--mouse-y) * 1px));
+        translateX(calc(var(--ball-x) * 1px))
+        translateY(calc(var(--ball-y) * 1px));
 }
 
 .draggable {
     position: absolute; 
     cursor: pointer; 
+}
+
+#info {
+    top: 70vmin;
+    position: absolute;
+    border: 2px solid blueviolet;
+    width: 80vmin;
+    height: 10vmin;
+    box-sizing: border-box;
 }
