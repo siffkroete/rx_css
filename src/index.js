@@ -19,6 +19,10 @@ import { boundaryDetection, collisionDetectionArr } from './game-util.js';
     };
     const gameArea = document.getElementById('game');
     const infoDiv = document.getElementById('info');
+    const infoDivLeft = document.getElementById('left_info');
+    const infoDivRight = document.getElementById('right_info');
+
+    // console.log('gameArea: ', gameArea, 'getClientRects() : ', gameArea.getClientRects())
 
     let gameRun = false;
 
@@ -56,12 +60,7 @@ import { boundaryDetection, collisionDetectionArr } from './game-util.js';
     const update = (deltaTime, state, inputState) => {
         if(gameRun) {
             z++;
-            if((z%100) == 0) console.log('inputState: ', inputState);
-            // console.log('within update: ---------------');
-            // console.log('deltaTime: ', deltaTime);
-            // console.log('state: : ', state);
-            // console.log('inputState: : ', inputState);
-            // console.log('End within update: -----------');
+            // if((z%100) == 0) console.log('inputState: ', inputState);
 
             if(state && state['objects'] !== undefined && state['objects'].length > 0) {
               
@@ -79,8 +78,12 @@ import { boundaryDetection, collisionDetectionArr } from './game-util.js';
                         // Grenz-Kollision
                         const didHitBound = boundaryDetection(obj, boundaries);
                         if(didHitBound) {
-                            if(didHitBound === 'right' || didHitBound === 'left') {
+                            if(didHitBound === 'right') {
                                 obj.velocity.x *= -1;
+                                state.spielStand.left++;
+                            } else if(didHitBound === 'left') {
+                                obj.velocity.x *= -1;
+                                state.spielStand.right++;
                             } else {
                                 obj.velocity.y *= -1;
                             }
@@ -104,8 +107,13 @@ import { boundaryDetection, collisionDetectionArr } from './game-util.js';
                             obj.y = obj.y += bewegungsRichtung * (obj.velocity.y*deltaTime);
                         }
                     } else if(obj.id === obj_id.P_R) {
-                        // obj.x = obj.x += obj.velocity.x*deltaTime;
-                        // obj.y = obj.y += obj.velocity.y*deltaTime;
+                        if(inputState && inputState.to.type === 'keydown') {
+                            let bewegungsRichtung = 0;
+                            if(inputState.to.name === 'ArrowDown') { bewegungsRichtung = 1;}
+                            else if(inputState.to.name === 'ArrowUp') { bewegungsRichtung = -1;}
+                          
+                            obj.y = obj.y += bewegungsRichtung * (obj.velocity.y*deltaTime);
+                        }
                     }
                     
                 });
@@ -121,33 +129,30 @@ import { boundaryDetection, collisionDetectionArr } from './game-util.js';
      */
     const ctx = gameArea.getContext('2d');
     const render = (state) => {
-        if(gameRun) {
-             // Wenn kein state dann gibts auch nichts zum Rendern.
-            if(!state || !state['objects']) return;
+        // Clear the canvas
+        ctx.clearRect(0, 0, gameArea.clientWidth, gameArea.clientHeight);
+    
+        // Render all of our objects (simple rectangles for simplicity)
+        state['objects'].forEach((obj) => {
+            ctx.fillStyle = obj.color;
+            ctx.fillRect(obj.x, obj.y, obj.width, obj.height);
+        });
 
-            // Clear the canvas
-            ctx.clearRect(0, 0, gameArea.clientWidth, gameArea.clientHeight);
-        
-            // Render all of our objects (simple rectangles for simplicity)
-            state['objects'].forEach((obj) => {
-                ctx.fillStyle = obj.color;
-                ctx.fillRect(obj.x, obj.y, obj.width, obj.height);
-            });
-        }
+        infoDivLeft.innerText = state.spielStand.left;
+        infoDivRight.innerText = state.spielStand.right;
     };
 
-    const timer$ = timer(19000);
+    const timer$ = timer(120000);
 
     // Stream von Events (hier Zahlen) die mit jedem Animation Frame des Browsers ausgesendet 
     // werden. share() wird verwendet damit sich subscriber bei Frame einschreiben können ohne das 
     // Seiteeffekte wiederholt werden.
     const _frame$ = of(0, animScheduler).pipe(repeat());
+    // const _frame$ = defer(() => of(0, animScheduler).pipe(repeat()));
     const frame$ = _frame$.pipe( 
-        
-            takeUntil(timer$),  // Nur für Debug zeitlich begrenzen
-            timestamp(),
-            share()
-        
+        takeUntil(timer$),  // Nur für Debug zeitlich begrenzen
+        timestamp(),
+        share()
     );
 
     const keydown$ = fromEvent(document, 'keydown').pipe(
@@ -195,14 +200,19 @@ import { boundaryDetection, collisionDetectionArr } from './game-util.js';
     );
     
     const velocity = 80;
-    const ball = new ObjToMove(15, 15, 100, 180, velocity, velocity, obj_id.BALL);
-    const paddle_left = new ObjToMove(10, 50, boundaries.left + 20, boundaries.top + 20,
+    const ball_start_pos = {x: 200, y: 180 };
+    const ball = new ObjToMove(15, 15, ball_start_pos.x, ball_start_pos.y, velocity, velocity, obj_id.BALL);
+    const paddle_left = new ObjToMove(10, 50, boundaries.left + 20, boundaries.top + 200,
         velocity, velocity, obj_id.P_L);
     const paddle_right = new ObjToMove(10, 50, boundaries.right - 30, boundaries.top + 200,
         velocity, velocity, obj_id.P_R);
 
     const initialState = {
         gameRun: false,
+        spielStand: {
+            left: 0,
+            right: 0
+        },
         obj_count: 1,
         objects: [ball, paddle_left, paddle_right]
     }
@@ -216,6 +226,7 @@ import { boundaryDetection, collisionDetectionArr } from './game-util.js';
     frame$.pipe(
         withLatestFrom(keyChangeEvent$, gameState$),
         map( ([_intervallNr, _keyChangeEvent, _gameState]) => {
+            // console.log('New Frame---!!!')
             const _now = _intervallNr.timestamp;
             const deltaTime =  _now - lastTimeStamp;
             lastTimeStamp = _now;
@@ -228,6 +239,7 @@ import { boundaryDetection, collisionDetectionArr } from './game-util.js';
         render(_game_state);
     });
     
+    gameArea.dispatchEvent(new KeyboardEvent('keypress',{'key':'a'}));
     // startButton.addEventListener('click', (ev) => {
     //     frame$
     // });

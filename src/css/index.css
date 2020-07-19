@@ -51,10 +51,19 @@ canvas {
 }
 
 #info {
+    display: flex;
     top: 70vmin;
     position: absolute;
     border: 2px solid blueviolet;
     width: 80vmin;
     height: 10vmin;
     box-sizing: border-box;
+}
+
+#left_info {
+    width: 50%;
+}
+
+#right_info {
+    width: 50%;
 }

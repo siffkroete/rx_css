@@ -33,9 +33,9 @@ export const collisionDetection2Obj = (obj_1, obj_2) => {
         // Das obj_1 ist noch nicht am obj_2 vorbei (vertikal)
         if(obj_1.y < obj_2.y + obj_2.height) untenVorbei = false;
         if(obj_1.y + obj_1.height > obj_2.y) obenVorbei = false; 
-        console.log('Abstand Rechts: ' + abstandRechts,
-        'untenVorbei: ' + untenVorbei + 'obenVorbei: ' + obenVorbei );
-        console.log('Rechts Kollision: xxx 1: ', (obj_1.x + obj_1.width), 'xxx 2: ', obj_2.x);
+        // console.log('Abstand Rechts: ' + abstandRechts,
+        // 'untenVorbei: ' + untenVorbei + 'obenVorbei: ' + obenVorbei );
+        // console.log('Rechts Kollision: xxx 1: ', (obj_1.x + obj_1.width), 'xxx 2: ', obj_2.x);
         if(!untenVorbei && !obenVorbei) {
             hit = 'right';
         }
@@ -45,9 +45,9 @@ export const collisionDetection2Obj = (obj_1, obj_2) => {
         // Das obj_1 ist noch nicht am obj_2 vorbei (vertikal)
         if(obj_1.y < obj_2.y + obj_2.height) untenVorbei = false;
         if(obj_1.y + obj_1.height > obj_2.y) obenVorbei = false; 
-        console.log('Abstand Rechts: ' + abstandRechts,
-        'untenVorbei: ' + untenVorbei + 'obenVorbei: ' + obenVorbei );
-        console.log('Rechts Kollision: xxx 1: ', (obj_1.x + obj_1.width), 'xxx 2: ', obj_2.x);
+        // console.log('Abstand Rechts: ' + abstandRechts,
+        // 'untenVorbei: ' + untenVorbei + 'obenVorbei: ' + obenVorbei );
+        // console.log('Rechts Kollision: xxx 1: ', (obj_1.x + obj_1.width), 'xxx 2: ', obj_2.x);
         if(!untenVorbei && !obenVorbei) {
             hit = 'left';
         }
