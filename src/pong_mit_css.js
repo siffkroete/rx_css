@@ -18,7 +18,6 @@ import { boundaryDetection, collisionDetectionArr } from './game-util.js';
         right: 400
     };
     const gameArea = document.getElementById('game');
-    const ctx = gameArea.getContext('2d');
     const infoDiv = document.getElementById('info');
     const infoDivLeft = document.getElementById('left_info');
     const infoDivRight = document.getElementById('right_info');

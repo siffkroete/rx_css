@@ -5,7 +5,7 @@
     --ball-y: 200;
 } 
 
-canvas {
+#game {
     border: 1px solid black;
 }
 
