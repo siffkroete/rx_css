@@ -1,15 +1,12 @@
 import { animationFrameScheduler as animScheduler, BehaviorSubject, Observable, of, fromEvent, merge, timer, defer, interval } from 'rxjs';
 import { buffer, bufferCount, expand, filter, map, switchMap, takeUntil, takeWhile, 
     share, tap, withLatestFrom, take, timestamp, repeat, scan, reduce } from 'rxjs/operators';
-import styledash from "./styledash.js";
-import "./css/index.css";
-
-import { boundaryDetection, collisionDetectionArr } from './game-util.js';
+import "./css/pong_mit_canvas.css";
+import { boundaryDetection, collisionDetectionArr, getRandomInt } from './game-util.js';
+import { Render } from './render_mit_canvas';
 
 
 (function start(input) {
-    const startButton = document.getElementById('start');
-    const stopButton = document.getElementById('stop');
 
     const boundaries = {
         left: 0,
@@ -18,12 +15,11 @@ import { boundaryDetection, collisionDetectionArr } from './game-util.js';
         right: 400
     };
     const gameArea = document.getElementById('game');
-    const ctx = gameArea.getContext('2d');
     const infoDiv = document.getElementById('info');
     const infoDivLeft = document.getElementById('left_info');
     const infoDivRight = document.getElementById('right_info');
+    const renderObj = Render(gameArea);
 
-    // console.log('gameArea: ', gameArea, 'getClientRects() : ', gameArea.getClientRects())
 
     let gameRun = false;
 
@@ -91,7 +87,7 @@ import { boundaryDetection, collisionDetectionArr } from './game-util.js';
                         }
 
                         // Paddle-Kollision
-                        const didHit = collisionDetectionArr(obj, state['objects'].slice(1));
+                        const didHit = collisionDetectionArr(obj, state['objects'].slice(-2));
                         if(didHit) {
                             if(didHit === 'right' || didHit === 'left') {
                                 obj.velocity.x *= -1;
@@ -122,27 +118,7 @@ import { boundaryDetection, collisionDetectionArr } from './game-util.js';
         } 
         return state;
     }
-
-    /**
-     * Zeichnet die Szene anhand dem neusten Game-State. Der Game-State ändert sich laufend
-     * so wie in der Funktionsprogrammierung üblich: neuer Status ersetzt den alten ohne ihn zu ändern.
-     * Das Ändern des Status wird aber anderswo gemacht
-     */
-    const ctx = gameArea.getContext('2d');
-    const render = (state) => {
-        // Clear the canvas
-        ctx.clearRect(0, 0, gameArea.clientWidth, gameArea.clientHeight);
-    
-        // Render all of our objects (simple rectangles for simplicity)
-        state['objects'].forEach((obj) => {
-            ctx.fillStyle = obj.color;
-            ctx.fillRect(obj.x, obj.y, obj.width, obj.height);
-        });
-
-        infoDivLeft.innerText = state.spielStand.left;
-        infoDivRight.innerText = state.spielStand.right;
-    };
-
+  
     const timer$ = timer(120000);
 
     // Stream von Events (hier Zahlen) die mit jedem Animation Frame des Browsers ausgesendet 
@@ -200,13 +176,38 @@ import { boundaryDetection, collisionDetectionArr } from './game-util.js';
         })
     );
     
+
+    // Spielobjekte erstellen ------------------------------------------
     const velocity = 80;
-    const ball_start_pos = {x: 200, y: 180 };
-    const ball = new ObjToMove(15, 15, ball_start_pos.x, ball_start_pos.y, velocity, velocity, obj_id.BALL);
-    const paddle_left = new ObjToMove(10, 50, boundaries.left + 20, boundaries.top + 200,
-        velocity, velocity, obj_id.P_L);
-    const paddle_right = new ObjToMove(10, 50, boundaries.right - 30, boundaries.top + 200,
-        velocity, velocity, obj_id.P_R);
+    const wall_distance = 20;
+    const paddel_width = 10;
+    const paddel_height = 50;
+    
+    // Padlle links
+    const p_l_start_pos = {x: boundaries.left + wall_distance, y: boundaries.top + 200,
+        width: paddel_width, height: paddel_height};
+    const paddle_left = new ObjToMove(p_l_start_pos.width, p_l_start_pos.height,
+        p_l_start_pos.x, p_l_start_pos.y, velocity, velocity, obj_id.P_L);
+    // Paddle rechts
+    const p_r_start_pos = {x: boundaries.right - wall_distance - paddel_width, y: boundaries.top + 200, 
+        width: paddel_width, height: paddel_height};
+    const paddle_right = new ObjToMove(p_l_start_pos.width, p_l_start_pos.height,
+        p_r_start_pos.x, p_r_start_pos.y, velocity, velocity, obj_id.P_R);
+
+    // Ball (oder mehrere Bälle)
+    const ANZAHL_BAELLE = 30;
+    const ball = [];
+    const ball_radius = 15;
+    for(let i = 0; i < ANZAHL_BAELLE; ++i) {
+        const x = getRandomInt(50, 350);
+        const y = getRandomInt(1, 299);
+        const velocityX = getRandomInt(100, 200);
+        const velocityY = getRandomInt(100, 200);
+        ball.push(new ObjToMove(ball_radius, ball_radius, x, y, velocityX, velocityY,
+            obj_id.BALL))
+    }
+    // End Spielobjekte erstellen --------------------------------------
+
 
     const initialState = {
         gameRun: false,
@@ -215,7 +216,7 @@ import { boundaryDetection, collisionDetectionArr } from './game-util.js';
             right: 0
         },
         obj_count: 1,
-        objects: [ball, paddle_left, paddle_right]
+        objects: [...ball, paddle_left, paddle_right]
     }
 
     const gameState$ = new BehaviorSubject(initialState);
@@ -237,10 +238,10 @@ import { boundaryDetection, collisionDetectionArr } from './game-util.js';
         }),
         tap((game_state) => gameState$.next(game_state))
     ).subscribe((_game_state) => {
-        render(_game_state);
+        renderObj.render(_game_state);
     });
     
-    gameArea.dispatchEvent(new KeyboardEvent('keypress',{'key':'a'}));
+    // gameArea.dispatchEvent(new KeyboardEvent('keypress',{'key':'a'}));
     // startButton.addEventListener('click', (ev) => {
     //     frame$
     // });

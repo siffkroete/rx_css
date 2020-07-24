@@ -24,9 +24,11 @@ export const boundaryDetection = (obj_1, obj_2) => {
 
 export const collisionDetection2Obj = (obj_1, obj_2) => {
     let hit = '';
-    let tolerance = 3; 
-    let abstandRechts = Math.abs((obj_1.x + obj_1.width) - obj_2.x);
-    let abstandLinks = Math.abs((obj_1.x - obj_2.x));
+    let tolerance = 1;
+
+    let abstandRechts = Math.abs( (obj_1.x + obj_1.width) - obj_2.x);
+    let abstandLinks = Math.abs( obj_1.x - (obj_2.x + obj_2.width) );
+
     if( abstandRechts < tolerance) {
         let untenVorbei = true;
         let obenVorbei = true;
@@ -69,3 +71,13 @@ export const collisionDetectionArr = (obj, arr) => {
     }
     return collision;
 };
+
+export const getRandomArbitrary = (min, max) => {
+    return Math.random() * (max - min) + min;
+}
+
+export const getRandomInt = (min, max) => {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}

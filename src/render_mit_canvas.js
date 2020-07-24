@@ -1,11 +1,14 @@
-var RenderClass = (function() {
+export const Render = (function() {
     var renderInstance = null;
-    var Render = function(renderContext) {
+    
+    var RenderClass = function(renderContext) {
         this.renderContext = renderContext;
     };
 
-    Render.prototype.render = function(state) {
-        const ctx = this.renderContext;
+    RenderClass.prototype.render = function(state) {
+        // console.log('this: ', this);
+        const gameArea = this.renderContext;
+        const ctx = this.renderContext.getContext('2d');
 
         // Clear the canvas
         ctx.clearRect(0, 0, gameArea.clientWidth, gameArea.clientHeight);
@@ -15,12 +18,11 @@ var RenderClass = (function() {
             ctx.fillStyle = obj.color;
             ctx.fillRect(obj.x, obj.y, obj.width, obj.height);
         });
-
-        infoDivLeft.innerText = state.spielStand.left;
-        infoDivRight.innerText = state.spielStand.right;
     }
 
-    return function getInstance(renderContext) {
-        if(renderClass === null) renderClass = new RenderClass(renderContext);
+    return function(renderContext) {
+        if(renderInstance === null) renderInstance = new RenderClass(renderContext);
+        return renderInstance;
     }
+   
 })();

@@ -1,49 +1,7 @@
-:root {
-    --paddle-left-x: 15;  
-    --paddle-left-y: 0; 
-    --ball-x: 200;
-    --ball-y: 200;
-} 
-
 canvas {
     border: 1px solid black;
 }
 
-#spielfeld {
-    position: absolute;
-    width: 80vmin;
-    height: 60vmin;
-    border: 2px solid black;
-    box-sizing: border-box;
-}
-
-#paddle_left {
-    position: absolute; 
-    width: 2vmin;
-    height: 10vmin;
-    border: 2px solid greenyellow;
-    background-color: aqua;
-    transform:
-        translateX(calc(var(--paddle-left-x) * 1px))
-        translateY(calc(var(--paddle-left-y) * 1px));
-}
-
-#ball {
-    position: absolute; 
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    border: 2px solid greenyellow;
-    background-color: hotpink;
-    transform:
-        translateX(calc(var(--ball-x) * 1px))
-        translateY(calc(var(--ball-y) * 1px));
-}
-
-.draggable {
-    position: absolute; 
-    cursor: pointer; 
-}
 
 #info {
     display: flex;
