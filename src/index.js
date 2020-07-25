@@ -1,9 +1,10 @@
 import { animationFrameScheduler as animScheduler, BehaviorSubject, Observable, of, fromEvent, merge, timer, defer, interval } from 'rxjs';
 import { buffer, bufferCount, expand, filter, map, switchMap, takeUntil, takeWhile, 
     share, tap, withLatestFrom, take, timestamp, repeat, scan, reduce } from 'rxjs/operators';
-import "./css/pong_mit_canvas.css";
+// import "./css/pong_mit_canvas.css";
+import "./css/pong_mit_css.css";
 import { boundaryDetection, collisionDetectionArr, getRandomInt } from './game-util.js';
-import { Render } from './render_mit_canvas';
+import { Render } from './render_mit_css';
 
 
 (function start(input) {
@@ -23,14 +24,14 @@ import { Render } from './render_mit_canvas';
 
     let gameRun = false;
 
-    const obj_id = {
-        'NO_OBJ': 0,
-        'BALL': 1,
-        'P_L': 2,
-        'P_R': 3
+    const obj_name = {
+        'NO_OBJ': 'NO_OBJ',
+        'BALL': 'BALL',
+        'P_L': 'P_L',
+        'P_R': 'P_R'
     }
 
-    function ObjToMove(width, height, x,y, vx, vy, _id) {
+    function ObjToMove(width, height, x,y, vx, vy, _name, _id) {
         this.width = width;
         this.height = height;
         this.x = x;
@@ -44,7 +45,8 @@ import { Render } from './render_mit_canvas';
             x: vx,
             y: vy
         },
-        this.id = _id
+        this.name = _name;
+        this.id = _id;
     }
 
     /**
@@ -63,8 +65,8 @@ import { Render } from './render_mit_canvas';
               
                 state['objects'].forEach((obj) => {
                     // if((z%100) == 0) console.log('obj: ', obj);
-                    // console.log('obj.id = obj.BALL: ' + 'obj.id: ' + obj.id + 'obj.BALL: ' + obj.BALL)
-                    if(obj.id === obj_id.BALL) {
+                    // console.log('obj.name = obj.BALL: ' + 'obj.name: ' + obj.name + 'obj.BALL: ' + obj.BALL)
+                    if(obj.name === obj_name.BALL) {
 
                         obj.x = obj.x += obj.velocity.x*deltaTime;
                         obj.y = obj.y += obj.velocity.y*deltaTime;
@@ -95,7 +97,7 @@ import { Render } from './render_mit_canvas';
                                 obj.velocity.y *= -1;
                             }
                         }
-                    } else if(obj.id === obj_id.P_L) {
+                    } else if(obj.name === obj_name.P_L) {
                         if(inputState && inputState.to.type === 'keydown') {
                             let bewegungsRichtung = 0;
                             if(inputState.to.name === 'ArrowDown') { bewegungsRichtung = 1;}
@@ -103,7 +105,7 @@ import { Render } from './render_mit_canvas';
                           
                             obj.y = obj.y += bewegungsRichtung * (obj.velocity.y*deltaTime);
                         }
-                    } else if(obj.id === obj_id.P_R) {
+                    } else if(obj.name === obj_name.P_R) {
                         if(inputState && inputState.to.type === 'keydown') {
                             let bewegungsRichtung = 0;
                             if(inputState.to.name === 'ArrowDown') { bewegungsRichtung = 1;}
@@ -187,15 +189,15 @@ import { Render } from './render_mit_canvas';
     const p_l_start_pos = {x: boundaries.left + wall_distance, y: boundaries.top + 200,
         width: paddel_width, height: paddel_height};
     const paddle_left = new ObjToMove(p_l_start_pos.width, p_l_start_pos.height,
-        p_l_start_pos.x, p_l_start_pos.y, velocity, velocity, obj_id.P_L);
+        p_l_start_pos.x, p_l_start_pos.y, velocity, velocity, obj_name.P_L, 1);
     // Paddle rechts
     const p_r_start_pos = {x: boundaries.right - wall_distance - paddel_width, y: boundaries.top + 200, 
         width: paddel_width, height: paddel_height};
     const paddle_right = new ObjToMove(p_l_start_pos.width, p_l_start_pos.height,
-        p_r_start_pos.x, p_r_start_pos.y, velocity, velocity, obj_id.P_R);
+        p_r_start_pos.x, p_r_start_pos.y, velocity, velocity, obj_name.P_R, 2);
 
     // Ball (oder mehrere Bälle)
-    const ANZAHL_BAELLE = 30;
+    const ANZAHL_BAELLE = 1;
     const ball = [];
     const ball_radius = 15;
     for(let i = 0; i < ANZAHL_BAELLE; ++i) {
@@ -204,7 +206,7 @@ import { Render } from './render_mit_canvas';
         const velocityX = getRandomInt(100, 200);
         const velocityY = getRandomInt(100, 200);
         ball.push(new ObjToMove(ball_radius, ball_radius, x, y, velocityX, velocityY,
-            obj_id.BALL))
+            obj_name.BALL, i + 3))
     }
     // End Spielobjekte erstellen --------------------------------------
 

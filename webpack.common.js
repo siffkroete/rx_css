@@ -1,10 +1,11 @@
 const webpack = require('webpack');
 const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 
 
 module.exports = {
-    entry: ['webpack/hot/dev-server' , './src/index.js'],
+    entry: './src/index.js',
     output: {
         path: path.resolve(__dirname, 'build'),
         publicPath: '/build',
@@ -14,7 +15,14 @@ module.exports = {
         contentBase: './build'
     },
     
-    mode: 'development', // TODO : mode: 'production',
+    plugins: [
+      // new CleanWebpackPlugin(['dist/*']) for < v2 versions of CleanWebpackPlugin
+      // new CleanWebpackPlugin(),
+      new HtmlWebpackPlugin({
+          title: 'Production',
+      }),
+    ],
+
     module: {
       rules: [
         {

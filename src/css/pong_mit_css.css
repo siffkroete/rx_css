@@ -37,6 +37,7 @@
         translateY(calc(var(--paddle-right-y) * 1px));
 }
 
+
 #ball {
     position: absolute; 
     width: 15px;
@@ -45,6 +46,7 @@
     border: 2px solid greenyellow;
     box-sizing: border-box;
     background-color: hotpink;
+    position: absolute; 
     transform:
         translateX(calc(var(--ball-x) * 1px))
         translateY(calc(var(--ball-y) * 1px));
