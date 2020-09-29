@@ -13,10 +13,18 @@ export const Render = (function() {
         // Clear the canvas
         ctx.clearRect(0, 0, gameArea.clientWidth, gameArea.clientHeight);
     
-        // Render all of our objects (simple rectangles for simplicity)
+        // Alle Objekte zeichnen
         state['objects'].forEach((obj) => {
-            ctx.fillStyle = obj.color;
-            ctx.fillRect(obj.x, obj.y, obj.width, obj.height);
+            if(obj.name === 'BALL') {
+                ctx.beginPath();
+                ctx.arc(obj.x, obj.y, obj.width/2, 0, Math.PI*2);
+                ctx.fillStyle = "#0095DD";
+                ctx.fill();
+                ctx.closePath();
+            } else {
+                ctx.fillStyle = obj.color;
+                ctx.fillRect(obj.left, obj.top, obj.width, obj.height);
+            }
         });
     }
 

@@ -1,3 +1,8 @@
+/* #game_wrapper {
+    position: absolute;
+    top: 30vmin;
+} */
+
 canvas {
     border: 1px solid black;
 }
@@ -5,11 +10,10 @@ canvas {
 
 #info {
     display: flex;
-    top: 70vmin;
-    position: absolute;
     border: 2px solid blueviolet;
     width: 80vmin;
-    height: 10vmin;
+    height: 50px;
+    margin-top: 3%;
     box-sizing: border-box;
 }
 

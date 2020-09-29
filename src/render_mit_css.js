@@ -10,7 +10,6 @@ const obj_name = {
 export const Render = (function() {
     var renderInstance = null;
     
-    
     var RenderClass = function(renderContext) {
         this.renderContext = renderContext;
         this.objects = [];
