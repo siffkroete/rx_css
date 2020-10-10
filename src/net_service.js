@@ -28,7 +28,14 @@ export var NetService = (function() {
         );
     }
 
-    NetService.prototype.sendMsg = function(msg) {
+    NetService.prototype.sendMsg = function(_msg, type = 'binary') {
+        let msg = '';
+        if(type === 'utf8' || type === 'text') {
+            msg = JSON.stringify(_msg);
+        } else if(type === 'binary' || type === 'arraybuffer' || type === 'ArrayBuffer') {
+            msg = _msg;
+        }
+        
         this.wsObserver.next(msg);
     }
 

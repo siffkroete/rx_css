@@ -2,7 +2,7 @@ import { startPong } from './pong';
 import { NetService, MSG } from './net_service';
 
 
-const netService = NetService.getInstance('ws://localhost:8888', 'utf8');
+const netService = NetService.getInstance('ws://localhost:8888', 'binary');
 
 
 (function() {
@@ -23,8 +23,22 @@ const netService = NetService.getInstance('ws://localhost:8888', 'utf8');
                 if(val instanceof ArrayBuffer) {
                     console.log('Daten vom Server sind vom Typ "ArrayBuffer". val: ', val);
                 } else {
-                    console.log('Von Server: ', val.payload.text);
-                    right_info.value = val.payload.text;
+                    let _val = {};
+                    if(typeof(val) === 'string') {
+                        console.log('Nachricht vom Server ist vom Typ string');
+                        try {
+                            _val = JSON.parse(val);
+                        } catch(e) {
+                            console.log('Nachricht vom Server ist nicht vom Typ json.');
+                            console.log('Nachricht wird ohne Parsen übernommen');
+                            _val = val;
+                        }
+                    } else {
+                        _val = val;
+                    }
+                    
+                    console.log('Von Server val:  ', _val);
+                    right_info.value = _val.payload.text;
                 }
             },
             error => console.log('Fehler: ', error),
@@ -36,6 +50,8 @@ const netService = NetService.getInstance('ws://localhost:8888', 'utf8');
     let myUsername = '';
 
     sendMsgButton.addEventListener('click', function(ev) {
+
+        const msgType = 'utf8';
         let text = left_info.value;
         if(myUsername === '') myUsername = text;
         const msg = {
@@ -47,7 +63,9 @@ const netService = NetService.getInstance('ws://localhost:8888', 'utf8');
         }
         // let buffer = new ArrayBuffer(16);
         // let msg = new Uint32Array(buffer); 
-        netService.sendMsg(msg);
+        
+        netService.sendMsg(msg, msgType);
+
     });
 
     disconnectButton.addEventListener('click', function(ev) {

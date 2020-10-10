@@ -11,7 +11,7 @@ import { GameModel } from './gameModel';
 
 
 
-export const startPong = function (netService) {
+export const startPong = function (netService$) {
     
     const gameArea = document.getElementById('game');
     const renderObj = Render(gameArea);
@@ -81,25 +81,31 @@ export const startPong = function (netService) {
         })
     );
 
-    let gameModel = GameModel.getInstance(netService);
+    let gameModel = GameModel.getInstance();
     
     const gameState$ = new BehaviorSubject(gameModel.getInitialState());
 
     let lastTimeStamp = Date.now();
 
+   
+    
     // Game-Loop çççççççççççççççççççççççççççççççççççççççççççççççççç
     const finalStream$ = defer(() => frame$.pipe(
-        withLatestFrom(keyChangeEvent$, gameState$),
-        map( ([_intervallNr, _keyChangeEvent, _gameState]) => {
-            // console.log('New Frame---!!!')
+        withLatestFrom(keyChangeEvent$, gameState$, netService$.wsObservable),
+        map( ([_intervallNr, _keyChangeEvent, _gameState, _inputState]) => {
+            console.log('New Frame---!!!')
             const _now = _intervallNr.timestamp;
             const deltaTime =  _now - lastTimeStamp;
             lastTimeStamp = _now;
             // Hier wird der neue Status anhand des alten und anhand des _keyChangeEvent berechnet.
             // KeyChangeEvent ist der Status der Knöpfe die gedrückt wurden in diesem 
             // Frame oder kurz davor.
-            const newGameState = gameModel.updateState(deltaTime/1000, _gameState, _keyChangeEvent);
-            return newGameState;
+            const newGameState = gameModel.updateState(deltaTime/1000, _gameState, _inputState);
+
+            netService$.sendMsg(_keyChangeEvent); // Daten an Server schicken
+
+            // Neuen Game-State zurückgeben damit er oben wieder dazu kommt werden bei withLatestFrom...
+            return newGameState; 
         }),
         tap((game_state) => gameState$.next(game_state))
     ));

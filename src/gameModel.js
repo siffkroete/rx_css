@@ -86,9 +86,8 @@ export var GameModel = (function() {
     // End Spielobjekte erstellen --------------------------------------
 
 
-    function GameModel(_netService) {
-        this.netService = _netService;
-        
+    function GameModel() {
+       
         this.state = {
             spielStand: {
                 left: 0,
@@ -108,7 +107,7 @@ export var GameModel = (function() {
     GameModel.prototype.updateState = function(deltaTime, state, inputState) {
         if(!this.gameRun) return state;
     
-        // if((z%100) == 0) console.log('inputState: ', inputState);
+        if((z%100) == 0) console.log('inputState: ', inputState);
 
         if(!(state && state['objects'] !== undefined && state['objects'].length > 0)) { return state; }
             
@@ -120,9 +119,6 @@ export var GameModel = (function() {
                 let delta_y = obj.velocity.y*deltaTime;
                 obj.move(delta_x, delta_y);
             
-                // Check if we exceeded our boundaries or paddle_left or paddle_right
-                // if((z%100) == 0) console.log('bla: ', [boundaries, ...state['objects'].slice(1)]);
-
                 // Grenz-Kollision
                 const didHitBound = boundaryDetection(obj, boundaries);
                 if(didHitBound) {
@@ -178,8 +174,8 @@ export var GameModel = (function() {
 
     var instance = null;
 
-    GameModel.getInstance = function(_netService = null) {
-        if(!instance) instance = new GameModel(_netService);
+    GameModel.getInstance = function() {
+        if(!instance) instance = new GameModel();
         return instance;
     }
     

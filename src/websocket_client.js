@@ -18,7 +18,7 @@ export const websocket_client = (function() {
                     binaryType: 'arraybuffer',
                     url: _url,
                     serializer: v => v, // Weil sonst automatisch JSON.parse bzw. JSON.stringify
-                    deserializer: v => v, // Weil sonst automatisch JSON.parse bzw. JSON.stringify
+                    deserializer: v => v.data, // Weil sonst automatisch JSON.parse bzw. JSON.stringify
                     closeObserver: closeSubject,
                     openObserver: {
                         next: () => console.log('Verbindung offen.')
