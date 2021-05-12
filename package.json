@@ -15,7 +15,7 @@
   "license": "ISC",
   "dependencies": {
     "html-webpack-plugin": "^4.3.0",
-    "merge": "^1.2.1",
+    "merge": "^2.1.1",
     "path": "^0.12.7",
     "rxcss": "^0.10.0",
     "rxjs": "^6.6.0",
